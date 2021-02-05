@@ -79,4 +79,12 @@ class Movie {
       return 'https://image.tmdb.org/t/p/w500/$posterPath';
     }
   }
+
+  getBackdrop() {
+    if (backdropPath == null) {
+      return 'https://pbs.twimg.com/profile_images/600060188872155136/st4Sp6Aw_400x400.jpg';
+    } else {
+      return 'https://image.tmdb.org/t/p/w500/$backdropPath';
+    }
+  }
 }
