@@ -16,6 +16,7 @@ class Peliculas {
 }
 
 class Movie {
+  String uniqueId;
   bool adult;
   String backdropPath;
   List<int> genreIds;
@@ -32,6 +33,7 @@ class Movie {
   int voteCount;
 
   Movie({
+    this.uniqueId,
     this.adult,
     this.backdropPath,
     this.genreIds,

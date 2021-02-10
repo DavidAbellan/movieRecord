@@ -8,7 +8,7 @@ class MovieHorizontal extends StatelessWidget {
   final Function siguientePagina;
 
   final _pageController =
-      new PageController(initialPage: 1, viewportFraction: 0.3);
+      new PageController(initialPage: 1, viewportFraction: 0.25);
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +21,12 @@ class MovieHorizontal extends StatelessWidget {
       }
     });
     return Container(
-      height: _screenSize.height * 0.4,
+      height: _screenSize.height * 0.2,
       //la diferencia entre Pageview y Pageview.builder
       //el builder carga solo cuando es necesario
       child: PageView.builder(
         controller: _pageController,
+
         pageSnapping: false,
         //children: _tarjetas(context),
         itemCount: peliculas.length,
@@ -37,31 +38,28 @@ class MovieHorizontal extends StatelessWidget {
   }
 
   Widget _tarjeta(BuildContext context, Movie e) {
+    e.uniqueId = '${e.id}-horizontal';
     final tarjeta = Container(
-      height: 80.0,
-      child: Container(
-          child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: FadeInImage(
-                  height: 130,
-                  fit: BoxFit.cover,
-                  placeholder: AssetImage('assets/img/g0RC.gif'),
-                  image: NetworkImage(e.getPosterImg())),
-            ),
-            SizedBox(
-              height: 5.0,
-            ),
-            Text(
-              e.title,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.caption,
-            )
-          ],
-        ),
-      )),
+      margin: EdgeInsets.only(right: 15.0),
+      child: Column(
+        children: <Widget>[
+          Hero(
+              tag: e.uniqueId,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: FadeInImage(
+                    height: 100,
+                    fit: BoxFit.cover,
+                    placeholder: AssetImage('assets/img/g0RC.gif'),
+                    image: NetworkImage(e.getPosterImg())),
+              )),
+          Text(
+            e.title,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.caption,
+          )
+        ],
+      ),
     );
 
     //retornamos este widget para controlar

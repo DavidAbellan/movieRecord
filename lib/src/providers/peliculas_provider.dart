@@ -50,6 +50,12 @@ class PeliculasProvider {
     return await _procesarRespuesta(url);
   }
 
+  Future<List<Movie>> buscarPelicula(String palabra) async {
+    final url = Uri.https(_url, '3/search/movie',
+        {'api_key': _apiKey, 'language': _language, 'query': palabra});
+    return await _procesarRespuesta(url);
+  }
+
   Future<List<Movie>> getPopulares() async {
     //control de datos(cargando) para que no haga
     //mas peticiones de las necesarias

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_records/src/providers/peliculas_provider.dart';
+import 'package:movie_records/src/search/search_delegate.dart';
 import 'package:movie_records/src/widgets/card_swiper_widget.dart';
 import 'package:movie_records/src/widgets/movie_horizontal.dart';
 
@@ -10,12 +11,17 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     peliculasProvider.getPopulares();
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text('Movie Records'),
         backgroundColor: Colors.blue,
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.search), onPressed: () => {})
+          IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                showSearch(
+                    context: context,
+                    delegate: DataSearch() /*query: 'Busca'*/);
+              })
         ],
       ),
       //SafeArea para que no se monte donde notch--> la bateria , el reloj,etc..
@@ -26,9 +32,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             _swiperTarjetas(),
-            Container(
-              child: _footer(context),
-            )
+            _footer(context),
           ],
         ),
       ),
@@ -38,7 +42,7 @@ class HomePage extends StatelessWidget {
   Widget _swiperTarjetas() {
     return FutureBuilder(
       future: peliculasProvider.getEnCines(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
         if (snapshot.hasData) {
           return CardSwiper(peliculas: snapshot.data);
         } else {
@@ -58,31 +62,30 @@ class HomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Divider(),
           Container(
-            padding: EdgeInsets.only(left: 15.0),
+            padding: EdgeInsets.only(left: 20.0),
             child: Text(
               'Populares',
               style: Theme.of(context).textTheme.subtitle1,
             ),
           ),
-          Divider(),
-          Container(
-            //FutureBuilder solo escucha una vez
-            //streambuilder se queda a la escucha
-            child: StreamBuilder(
-              stream: peliculasProvider.popularesStream,
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return MovieHorizontal(
-                    peliculas: snapshot.data,
-                    siguientePagina: peliculasProvider.getPopulares,
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            ),
+          SizedBox(
+            height: 1.0,
+          ),
+          //FutureBuilder solo escucha una vez
+          //streambuilder se queda a la escucha
+          StreamBuilder(
+            stream: peliculasProvider.popularesStream,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return MovieHorizontal(
+                  peliculas: snapshot.data,
+                  siguientePagina: peliculasProvider.getPopulares,
+                );
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
           ),
         ],
       ),

@@ -19,22 +19,33 @@ class CardSwiper extends StatelessWidget {
     //porque hay que definir unas dimensiones
     //(width,height) que necesita para su visualización
     return Container(
-      padding: EdgeInsets.only(top: 12.0),
+      padding: EdgeInsets.only(top: 3.0),
       //double.infinity para que ocupe todo lo que pueda
       //width: double.infinity,
       child: Swiper(
         layout: SwiperLayout.STACK,
         itemWidth: _screenSize.width * 0.7,
-        itemHeight: _screenSize.height * 0.5,
+        itemHeight: _screenSize.height * 0.50,
         itemBuilder: (BuildContext context, int index) {
+          //cuando hacemos tap en populares o en principal vamos a detalle
+          //pero falla cuando está la misma película si ambos están  la misma
+          //página, por eso vamos a crear un uniqueId
+          peliculas[index].uniqueId = '${peliculas[index].id}-tarjeta';
           //ClipRRect para bordes redondeados
-          return ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: FadeInImage(
-                placeholder: AssetImage('assets/img/g0RC.gif'),
-                fit: BoxFit.cover,
-                image: NetworkImage(peliculas[index].getPosterImg()),
-              ));
+          return Hero(
+              tag: peliculas[index].uniqueId,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, 'detalle',
+                            arguments: peliculas[index]);
+                      },
+                      child: FadeInImage(
+                        placeholder: AssetImage('assets/img/g0RC.gif'),
+                        fit: BoxFit.cover,
+                        image: NetworkImage(peliculas[index].getPosterImg()),
+                      ))));
         },
         itemCount: peliculas.length,
         //pagination: new SwiperPagination(),
